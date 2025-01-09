@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metar-scraper
+  namespace: home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metar-scraper
+  template:
+    metadata:
+      labels:
+        app: metar-scraper
+    spec:
+      containers:
+        - name: metar-scraper
+          image: ghcr.io/dzfranklin/metar-scraper:latest
+          env:
+            - name: INFLUX_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: influx
+                  key: host
+            - name: INFLUX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: influx
+                  key: token
+            - name: INFLUX_ORG
+              valueFrom:
+                secretKeyRef:
+                  name: influx
+                  key: org
+            - name: INFLUX_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: influx
+                  key: bucket
