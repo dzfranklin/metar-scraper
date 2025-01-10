@@ -54,9 +54,6 @@ func main() {
 			if data.Dewp != nil {
 				point.AddField("dewp", *data.Dewp)
 			}
-			if data.Wdir != nil {
-				point.AddField("wdir", *data.Wdir)
-			}
 			if data.Wspd != nil {
 				point.AddField("wspd", *data.Wspd)
 			}
@@ -78,7 +75,6 @@ type datapoint struct {
 	IcaoID  string `json:"icaoId"`
 	Temp    *int   `json:"temp"`
 	Dewp    *int   `json:"dewp"`
-	Wdir    *int   `json:"wdir"`
 	Wspd    *int   `json:"wspd"`
 	Wgst    *int   `json:"wgst"`
 }
@@ -104,6 +100,7 @@ func requestData() (*datapoint, error) {
 
 	var datapoints []datapoint
 	if err := json.Unmarshal(respBody, &datapoints); err != nil {
+		slog.Error("failed to unmarshal response", "error", err, "response", string(respBody))
 		return nil, err
 	}
 
