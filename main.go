@@ -44,22 +44,14 @@ func main() {
 			point := write.NewPoint(
 				"metar",
 				map[string]string{"station": data.IcaoID},
-				nil,
+				map[string]any{
+					"temp": data.Temp,
+					"dewp": data.Dewp,
+					"wspd": data.Wspd,
+					"wgst": data.Wgst,
+				},
 				obsTime,
 			)
-
-			if data.Temp != nil {
-				point.AddField("temp", *data.Temp)
-			}
-			if data.Dewp != nil {
-				point.AddField("dewp", *data.Dewp)
-			}
-			if data.Wspd != nil {
-				point.AddField("wspd", *data.Wspd)
-			}
-			if data.Wgst != nil {
-				point.AddField("wgst", *data.Wgst)
-			}
 
 			if err := influxWrite.WritePoint(context.Background(), point); err != nil {
 				slog.Error("failed to write point", "error", err)
@@ -73,10 +65,10 @@ func main() {
 type datapoint struct {
 	ObsTime int    `json:"obsTime"`
 	IcaoID  string `json:"icaoId"`
-	Temp    *int   `json:"temp"`
-	Dewp    *int   `json:"dewp"`
-	Wspd    *int   `json:"wspd"`
-	Wgst    *int   `json:"wgst"`
+	Temp    int    `json:"temp"`
+	Dewp    int    `json:"dewp"`
+	Wspd    int    `json:"wspd"`
+	Wgst    int    `json:"wgst"`
 }
 
 func requestData() (*datapoint, error) {
